@@ -1,6 +1,6 @@
 try:
     from utils.pybox import *
-except ImportError:
+except Exception:
     print('Warning: C++ module import failed! This should only happen in deployment')
     from utils.util import py_nms as torch_nms
     from utils.util import py_box_overlap as torch_overlap
