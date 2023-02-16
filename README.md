@@ -1,5 +1,7 @@
 ## SANet: A Slice-Aware Network for Pulmonary Nodule Detection
 
+** I changed the (original code)[https://github.com/mj129/SANet] so that it works without bulding `box/` **
+
 This paper ([SANet](https://ieeexplore.ieee.org/document/9373930)) has been accepted and early accessed in IEEE TPAMI 2021.
 
 This code and our data are licensed for non-commerical research purpose only.
