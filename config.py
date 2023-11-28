@@ -12,9 +12,11 @@ torch.manual_seed(SEED)
 torch.cuda.manual_seed_all(SEED)
 
 # Preprocessing using preserved HU in dilated part of mask
-BASE = '/home/media/ssd/process_zoom/' # make sure you have the ending '/'
+DATA = '/radraid/apps/personal/wasil/PN9/'
+BASE = '/radraid/apps/personal/wasil/sanet/' # make sure you have the ending '/'
 data_config = {
     # directory for putting all preprocessed results for training to this path
+    # 'preprocessed_data_dir': BASE + 'full',
     'preprocessed_data_dir': BASE + 'full',
 
     'roi_names': ['nodule'],
@@ -92,7 +94,8 @@ def lr_shedule(epoch, init_lr=0.01, total=200):
 
 train_config = {
     'net': 'SANet',
-    'batch_size': 16,
+    # 'batch_size': 16,       ## takes up roughly 12GB I think ?? 
+    'batch_size': 32,       ## takes up roughly 24GB I think ?? 
 
     'lr_schedule': lr_shedule,
     'optimizer': 'SGD',
@@ -104,13 +107,14 @@ train_config = {
     'epoch_rcnn': 20,
     'num_workers': 30,
 
-    'train_set_list': BASE + 'split_full_with_nodule_9classes/train.txt',
-    'val_set_list': BASE + 'split_full_with_nodule_9classes/val.txt',
-    'test_set_name': BASE + 'split_full_with_nodule_9classes/test.txt',
-    'train_anno': BASE + 'split_full_with_nodule_9classes/train_anno.csv',
-    'test_anno': BASE + 'split_full_with_nodule_9classes/test_anno.csv',
-    'DATA_DIR': data_config['preprocessed_data_dir'],
-    'ROOT_DIR': os.getcwd()
+    'train_set_list': DATA + 'train.txt',
+    'val_set_list': DATA + 'val.txt',
+    'test_set_name': DATA + 'test.txt',
+    'train_anno': DATA + 'train_anno.csv',
+    'test_anno': DATA + 'test_anno.csv',
+    # 'DATA_DIR': data_config['preprocessed_data_dir'],
+    'DATA_DIR': DATA + 'train',
+    'ROOT_DIR': BASE
 }
 
 if train_config['optimizer'] == 'SGD':
