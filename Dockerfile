@@ -8,13 +8,13 @@ RUN pip install opencv-python==4.5.5.64
 RUN pip install pynrrd tqdm future pydicom scipy matplotlib scikit-image pandas termcolor tensorboard
 
 RUN /opt/conda/bin/conda install --debug --override-channels -c main -c conda-forge cython numpy -y
+RUN chmod 777 -R /opt/conda/lib/python3.6
 
 # RUN mkdir /lib
 WORKDIR /lib/
 RUN git clone https://github.com/mwwahi/SANet.git SANet
 
 RUN chmod 777 -R /lib/SANet
-RUN chmod 777 -R /opt/conda/lib/python3.6
 
 WORKDIR /lib/SANet
 WORKDIR /lib/SANet/build/box
