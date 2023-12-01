@@ -14,6 +14,7 @@ WORKDIR /lib/
 RUN git clone https://github.com/mwwahi/SANet.git SANet
 
 RUN chmod 777 -R /lib/SANet
+RUN chmod 777 -R /opt/conda/lib/python3.6
 
 WORKDIR /lib/SANet
 WORKDIR /lib/SANet/build/box

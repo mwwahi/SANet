@@ -5,8 +5,10 @@ import torch
 from torch.autograd import Variable
 try:
     from utils.pybox import *
+    print("pybox import successful.")
 except Exception:
     print('Warning: C++ module import failed! This should only happen in deployment')
+    raise()
     from utils.util import py_nms as torch_nms
     from utils.util import py_box_overlap as torch_overlap
 
