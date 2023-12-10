@@ -11,7 +11,7 @@ RUN /opt/conda/bin/conda install --debug --override-channels -c main -c conda-fo
 RUN chmod 777 -R /opt/conda/lib/python3.6
 
 # RUN mkdir /lib
-WORKDIR /lib/
+WORKDIR /lib
 RUN git clone https://github.com/mwwahi/SANet.git SANet
 
 RUN chmod 777 -R /lib/SANet
