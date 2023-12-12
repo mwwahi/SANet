@@ -24,7 +24,7 @@ import pandas as pd
 from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 
 this_module = sys.modules[__name__]
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--net', '-m', metavar='NET', default=config['net'],
@@ -46,7 +46,7 @@ def main():
     args = parser.parse_args()
 
     if args.mode == 'eval':
-        data_dir = config['preprocessed_data_dir']
+        data_dir = config['preprocessed_data_dir_test']
         test_set_name = args.test_set_name
         num_workers = 16
         initial_checkpoint = args.weight

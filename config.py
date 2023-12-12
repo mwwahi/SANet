@@ -18,6 +18,7 @@ data_config = {
     # directory for putting all preprocessed results for training to this path
     # 'preprocessed_data_dir': BASE + 'full',
     'preprocessed_data_dir': BASE + 'full',
+    'preprocessed_data_dir_test': DATA + 'test',
 
     'roi_names': ['nodule'],
     'crop_size': [128, 128, 128],
