@@ -1,7 +1,10 @@
 import sys
 import numpy as np
 import torch
-from config import config
+try:
+    from config import config
+except:
+    config={"roi_names":[]}
 import pydicom as dicom
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -14,7 +17,7 @@ import numpy as np
 # import matplotlib as mpl
 # mpl.use('TkAgg')
 # import matplotlib.pyplot as plt
-# import SimpleITK as sitk
+import SimpleITK as sitk
 import pydicom
 import matplotlib.cm as cm
 import math
@@ -535,7 +538,9 @@ def pad2factor(image, factor=16, pad_value=0):
     return image
 
 
-def normalize(img):
+def normalize(img, norm_range=None):
+    if norm_range is None:
+        norm_range = (-1, 1)
     maximum = img.max()
     minimum = img.min()
 
@@ -543,8 +548,9 @@ def normalize(img):
     img = (img - minimum) / max(1, (maximum - minimum))
     
     # -1 ~ 1
-    img = img * 2 - 1
+    img = img * (norm_range[1] - norm_range[0]) + norm_range[0]
     return img
+
 
 def annotation2multi_mask(mask):
     multi_mask = np.zeros(mask[mask.keys()[0]].shape)
@@ -602,3 +608,17 @@ def truncate_HU_uint8(img):
     new_img[new_img > 1] = 1
     new_img = (new_img * 255).astype('uint8')
     return new_img
+
+
+# order=0, bilinear interpolation is order=1, and bicubic is order=3 (default).
+# methods=['nearest-neighbor', 'bilinear', 'biquadratic', 'bicubic']
+def resample(image, slice_spacing_init, slice_spacing_final, o=1):
+    zoom_factor = []
+    for i, dim_init in enumerate(slice_spacing_init):
+        dim_final = slice_spacing_final[i]
+        zoom_factor.append(float(dim_final)/float(dim_init))
+    # print('Original array:\n{0}\n\n'.format(x))
+    return zoom(image, zoom_factor, order=o)
+    # for o in range(4):
+    #     print('Resampled with {0} interpolation:\n {1}\n\n'.
+    #     format(methods[o],  zoom(x, z, order=o)))
