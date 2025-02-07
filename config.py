@@ -19,6 +19,7 @@ data_config = {
     # 'preprocessed_data_dir': BASE + 'full',
     'preprocessed_data_dir': BASE + 'full',
     'preprocessed_data_dir_test': DATA + 'test',
+    # 'preprocessed_data_dir_test': "/radraid/apps/personal/wasil/PN9/all",
 
     'roi_names': ['nodule'],
     'crop_size': [128, 128, 128],

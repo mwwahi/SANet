@@ -24,8 +24,11 @@ from config import config
 import pandas as pd
 from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 
+# from torch.nn.parallel import DistributedDataParallel as DDP
+from collections import OrderedDict
+
 this_module = sys.modules[__name__]
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--net', '-m', metavar='NET', default=config['net'],
@@ -39,12 +42,18 @@ parser.add_argument("--dicom-path", type=str, default=None,
 parser.add_argument("--out-dir", type=str, default=config['out_dir'],
                     help="path to save the results")
 parser.add_argument("--test-set-name", type=str, default=config['test_set_name'],
-                    help="path to save the results")
+                    help="path to save the results") ### i don't think this is a path to save the results -- this is the path of the case list 
+
+# parser.add_argument('--local_rank', default=0, type=int, help='Rank of the process in DDP') ## NOTE: needed to run in torch.distributed.launch
+#                                                                                             ## in new version this isn't necessary
 
 
 def main():
     logging.basicConfig(format='[%(levelname)s][%(asctime)s] %(message)s', level=logging.INFO)
     args = parser.parse_args()
+
+    # rank = int(os.environ.get('RANK'))
+    rank = 0
 
     if args.mode == 'eval':
         data_dir = config['preprocessed_data_dir_test']
@@ -56,15 +65,33 @@ def main():
 
         net = getattr(this_module, net)(config)
         net = net.cuda()
+        # net = DDP(net, device_ids=[rank])  # Wrap model with DistributedDataParallel
 
         if initial_checkpoint:
             print('[Loading model from %s]' % initial_checkpoint)
             # checkpoint = torch.load(initial_checkpoint)
             checkpoint = torch.load(initial_checkpoint)
-            # checkpoint = torch.load(initial_checkpoint, map_location='cuda:0')
+            # checkpoint = torch.load(initial_checkpoint, map_location='cuda:0') # https://github.com/computationalmedia/semstyle/issues/3
             epoch = checkpoint['epoch']
             # model.load_state_dict(torch.load(PATH), strict=False)
-            net.load_state_dict(checkpoint['state_dict'])
+            # net.load_state_dict(checkpoint['state_dict']) # https://discuss.pytorch.org/t/missing-keys-unexpected-keys-in-state-dict-when-loading-self-trained-model/22379/5
+                                                            # https://discuss.pytorch.org/t/solved-keyerror-unexpected-key-module-encoder-embedding-weight-in-state-dict/1686/29
+            # name = k.replace(".module", “”) # removing ‘.module’ from key
+
+            ### Solution 1: 
+            print(checkpoint.keys())
+            net.load_state_dict(checkpoint['state_dict'], strict=False)
+
+            ### Solution 2:
+            # state_dict = OrderedDict()
+            # # print(checkpoint['state_dict'].keys())
+            # for k,v in checkpoint['state_dict'].items():
+            #     k = k.replace("module.", "")
+            #     # print(k)
+            #     state_dict[k] = v
+            # # state_dict = checkpoint['state_dict'].replace(".module", "")
+            # net.load_state_dict(state_dict)
+
         else:
             print('No model weight file specified')
             return
@@ -136,35 +163,16 @@ def eval(net, dataset, save_dir=None):
     
     df = pd.DataFrame(res, columns=col_names)
     df.to_csv(res_path, index=False)
-    return res_path
 
-
-def cad_eval(annotations_filename, val_path, res_path, eval_dir,):
     # Start evaluating
     if not os.path.exists(os.path.join(eval_dir, 'res')):
         os.makedirs(os.path.join(eval_dir, 'res'))
 
+    # annotations_filename = '/cvib2/apps/personal/wasil/lib/SANet_fixed/data/test_anno_center.csv'
+    # # test_anno_center.csv is a csv file with 'center_x','center_y','center_z', and 'diameter'. You can obtain these parameters by using 'xmin', 'xmax', etc.
+    # val_path = '/radraid/apps/personal/wasil/PN9/test.txt'
 
-    noduleCADEvaluation(annotations_filename, res_path, val_path, os.path.join(eval_dir, 'res'))
+    # noduleCADEvaluation(annotations_filename, res_path, val_path, os.path.join(eval_dir, 'res'))
 
 if __name__ == '__main__':
-    res_path = main()
-
-    # res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_pretrained_results/res/95/FROC/results.csv"
-    # eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_pretrained_results/res/95/FROC"
-    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_wasil_trained_16_epochs/res/16/FROC/results.csv"
-    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_wasil_trained_16_epochs/res/16/FROC"
-
-    res_path = "/cvib2/apps/personal/wasil/lib/dissertation/sa1/sanet/pn9_lr0.01_full_endless_greaterthan6nodules_results.csv"
-    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/monai_sanet_eval"
-
-    # res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_wasil_trained_44_epochs/res/44/FROC/results.csv"
-    # eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_wasil_trained_44_epochs/res/44/FROC"
-    # annotations_filename = '/home/media/ssd/process_zoom/split_full_with_nodule_9classes/test_anno_center.csv'
-    # annotations_filename = '/radraid/apps/personal/wasil/PN9/test_anno.csv'
-    # annotations_filename = '/radraid/apps/personal/wasil/PN9/test_anno_converted_cccd.csv'
-    annotations_filename = '/radraid/apps/personal/wasil/PN9/all_anno_converted_cccd.csv'
-    # test_anno_center.csv is a csv file with 'center_x','center_y','center_z', and 'diameter'. You can obtain these parameters by using 'xmin', 'xmax', etc.
-    # val_path = '/home/media/ssd/process_zoom/split_full_with_nodule_9classes/test.txt'
-    val_path = '/radraid/apps/personal/wasil/PN9/test.txt'
-    # cad_eval(annotations_filename, val_path, res_path, eval_dir,)
+    main()

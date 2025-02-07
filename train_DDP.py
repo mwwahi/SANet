@@ -185,7 +185,8 @@ def main():
         validate(net, val_loader, i, val_writer)
 
 
-        state_dict = net.state_dict()
+        ### fix for saving as original network (rather than within the DPP module) ###
+        state_dict = net.module.state_dict()
         for key in state_dict.keys():
             state_dict[key] = state_dict[key].cpu()
 
@@ -196,6 +197,17 @@ def main():
                 'state_dict': state_dict,
                 'optimizer' : optimizer.state_dict()},
                 os.path.join(model_out_dir, '%03d.ckpt' % i))
+        # state_dict = net.state_dict()
+        # for key in state_dict.keys():
+        #     state_dict[key] = state_dict[key].cpu()
+
+        # if i % epoch_save == 0:
+        #     torch.save({
+        #         'epoch': i,
+        #         'out_dir': out_dir,
+        #         'state_dict': state_dict,
+        #         'optimizer' : optimizer.state_dict()},
+        #         os.path.join(model_out_dir, '%03d.ckpt' % i))
 
     writer.close()
     train_writer.close()

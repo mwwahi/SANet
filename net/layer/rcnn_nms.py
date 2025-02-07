@@ -46,7 +46,9 @@ def rcnn_nms(cfg, mode, inputs, proposals, logits, deltas):
     deltas = deltas.cpu().data.numpy().reshape(-1, num_class, 6)
     proposals = proposals.cpu().data.numpy()
     # masks = (F.sigmoid(mask_logits).cpu().data.numpy() > 0.5).astype(np.uint8)
-
+    print(probs)
+    print(deltas)
+    print(proposals)
     #non-max suppression
     detections = []
     # segments = []
@@ -55,6 +57,8 @@ def rcnn_nms(cfg, mode, inputs, proposals, logits, deltas):
         detection = [np.empty((0, 9), np.float32),]
 
         index = np.where(proposals[:,0] == b)[0]
+        print("RCCN_NMS")
+        print(index, "out of", len(probs), len(deltas), len(proposals))
         if len(index)>0:
             prob  = probs[index]
             delta = deltas[index]
