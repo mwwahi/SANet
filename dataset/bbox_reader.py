@@ -12,6 +12,7 @@ import pandas as pd
 
 class BboxReader(Dataset):
     def __init__(self, data_dir, set_name, cfg, mode='train'):
+        print(set_name)
         self.mode = mode
         self.cfg = cfg
         self.r_rand = cfg['r_rand_crop']

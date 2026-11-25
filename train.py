@@ -44,9 +44,13 @@ parser.add_argument('--epoch-save', default=train_config['epoch_save'], type=int
                     help='save frequency')
 parser.add_argument('--out-dir', default=train_config['out_dir'], type=str, metavar='OUT',
                     help='directory to save results of this training')
-parser.add_argument('--train-set', default=train_config['train_set_list'], nargs='+', type=str,
+# parser.add_argument('--train-set', default=train_config['train_set_list'], nargs='+', type=str,
+#                     help='train set paths list')
+# parser.add_argument('--val-set', default=train_config['val_set_list'], nargs='+', type=str,
+#                     help='val set paths list')
+parser.add_argument('--train-set', default=train_config['train_set_list'], type=str,
                     help='train set paths list')
-parser.add_argument('--val-set', default=train_config['val_set_list'], nargs='+', type=str,
+parser.add_argument('--val-set', default=train_config['val_set_list'], type=str,
                     help='val set paths list')
 parser.add_argument('--data-dir', default=train_config['DATA_DIR'], type=str, metavar='OUT',
                     help='path to load data')
@@ -71,7 +75,7 @@ def main():
     batch_size = args.batch_size
     lr_schdule = train_config['lr_schedule']
     data_dir = args.data_dir
-
+    
     train_dataset = BboxReader(data_dir, args.train_set, config, mode='train')
     val_dataset = BboxReader(data_dir, args.val_set, config, mode='val')
         

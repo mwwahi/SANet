@@ -148,7 +148,7 @@ def cad_eval(annotations_filename, val_path, res_path, eval_dir,):
     noduleCADEvaluation(annotations_filename, res_path, val_path, os.path.join(eval_dir, 'res'))
 
 if __name__ == '__main__':
-    res_path = main()
+    # res_path = main()
 
     # res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_pretrained_results/res/95/FROC/results.csv"
     # eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_pretrained_results/res/95/FROC"
@@ -158,13 +158,35 @@ if __name__ == '__main__':
     res_path = "/cvib2/apps/personal/wasil/lib/dissertation/sa1/sanet/pn9_lr0.01_full_endless_greaterthan6nodules_results.csv"
     eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/monai_sanet_eval"
 
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/20/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20"
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_5_10/res/10/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_5_10"
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/15/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/15"
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/17/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/17"
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/9/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/9"
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/10/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/10"
+
+    res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/13/FROC/results.csv"
+    eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet/experiment_10_20/res/13"
+
     # res_path = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_wasil_trained_44_epochs/res/44/FROC/results.csv"
     # eval_dir = "/radraid2/mwahianwar/dissertation/scratch/sa1/sanet_wasil_trained_44_epochs/res/44/FROC"
     # annotations_filename = '/home/media/ssd/process_zoom/split_full_with_nodule_9classes/test_anno_center.csv'
     # annotations_filename = '/radraid/apps/personal/wasil/PN9/test_anno.csv'
     # annotations_filename = '/radraid/apps/personal/wasil/PN9/test_anno_converted_cccd.csv'
     annotations_filename = '/radraid/apps/personal/wasil/PN9/all_anno_converted_cccd.csv'
+    val_path = '/radraid/apps/personal/wasil/PN9/test.txt'
     # test_anno_center.csv is a csv file with 'center_x','center_y','center_z', and 'diameter'. You can obtain these parameters by using 'xmin', 'xmax', etc.
     # val_path = '/home/media/ssd/process_zoom/split_full_with_nodule_9classes/test.txt'
-    val_path = '/radraid/apps/personal/wasil/PN9/test.txt'
-    # cad_eval(annotations_filename, val_path, res_path, eval_dir,)
+    cad_eval(annotations_filename, val_path, res_path, eval_dir,)
